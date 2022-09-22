@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-class RatingColumn extends StatelessWidget {
+class RatingWidget extends StatelessWidget {
   final dynamic rating;
-  const RatingColumn({super.key, required this.rating});
+  const RatingWidget({super.key, required this.rating});
 
   @override
   Widget build(BuildContext context) {
@@ -10,7 +10,7 @@ class RatingColumn extends StatelessWidget {
         rating == null ? 0 : double.parse(rating.toStringAsPrecision(3));
 
     int integerPart = ratingNumber ~/ 2;
-    debugPrint(integerPart.toString());
+    //debugPrint(integerPart.toString());
     List<double> fills = [0, 0, 0, 0, 0];
     for (int i = 0; i < integerPart; i++) {
       fills[i] = 1;

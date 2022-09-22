@@ -5,31 +5,37 @@ import 'package:tokenlab_movies/models/movie_details_model.dart';
 import 'package:tokenlab_movies/models/movie_model.dart';
 import 'package:http/http.dart' as http;
 
-class MoviesRepository {
-  Future<List<Movie>> getMoviesList() async {
+class MoviesController {
+  ValueNotifier<List<Movie>> moviesList = ValueNotifier<List<Movie>>([]);
+  ValueNotifier<bool> loadingMoviesList = ValueNotifier<bool>(false);
+
+  String apiUrl =
+      'https://desafio-mobile.nyc3.digitaloceanspaces.com/movies-v2';
+
+  Future<void> getMoviesList() async {
+    loadingMoviesList.value = true;
+    moviesList.value = [];
     try {
       final response = await http.get(
-        Uri.parse(
-            'https://desafio-mobile.nyc3.digitaloceanspaces.com/movies-v2'),
+        Uri.parse(apiUrl),
       );
-
-      List<Movie> movieList = (jsonDecode(response.body) as List)
+      loadingMoviesList.value = false;
+      moviesList.value = (jsonDecode(response.body) as List)
           .map((movie) => Movie.fromJson(movie))
           .toList();
-      return movieList;
     } catch (e) {
       debugPrint(e.toString());
-      return [];
+      loadingMoviesList.value = false;
+      moviesList.value = [];
     }
+    return;
   }
 
   Future<MovieDetails> getMovieDetails(int id) async {
     try {
       final response = await http.get(
-        Uri.parse(
-            'https://desafio-mobile.nyc3.digitaloceanspaces.com/movies-v2/$id'),
+        Uri.parse('$apiUrl/$id'),
       );
-
       MovieDetails movie = MovieDetails.fromJson(jsonDecode(response.body));
       return movie;
     } catch (e) {

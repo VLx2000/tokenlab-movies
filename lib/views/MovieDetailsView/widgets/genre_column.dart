@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-class GenreColumn extends StatelessWidget {
+class GenreWidget extends StatelessWidget {
   final dynamic genres;
-  const GenreColumn({super.key, required this.genres});
+  const GenreWidget({super.key, required this.genres});
 
   @override
   Widget build(BuildContext context) {

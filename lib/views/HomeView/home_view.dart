@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tokenlab_movies/models/movie_model.dart';
 import 'package:tokenlab_movies/controllers/movies_controller.dart';
 import 'package:tokenlab_movies/views/HomeView/widgets/movie_card.dart';
 
@@ -10,14 +9,19 @@ class HomeView extends StatefulWidget {
   State<HomeView> createState() => _HomeViewState();
 }
 
+Widget loading() {
+  return const Center(
+    child: CircularProgressIndicator(),
+  );
+}
+
 class _HomeViewState extends State<HomeView> {
-  late Future<List<Movie>> futureMovies;
-  MoviesRepository repository = MoviesRepository();
+  final MoviesController _controller = MoviesController();
 
   @override
   void initState() {
     super.initState();
-    futureMovies = repository.getMoviesList();
+    _controller.getMoviesList();
   }
 
   @override
@@ -27,12 +31,15 @@ class _HomeViewState extends State<HomeView> {
     return Scaffold(
       appBar: AppBar(title: const Text('Tokenlab Movies')),
       body: Center(
-        child: FutureBuilder<List<Movie>>(
-          future: futureMovies,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              List<Movie> list = snapshot.data ?? [];
-              if (list.isEmpty) {
+        child: ValueListenableBuilder(
+          valueListenable: _controller.moviesList,
+          builder: ((context, moviesList, loading) {
+            if (moviesList.isEmpty) {
+              if (_controller.loadingMoviesList.value) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else {
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -44,11 +51,7 @@ class _HomeViewState extends State<HomeView> {
                       ),
                     ),
                     ElevatedButton.icon(
-                      onPressed: () {
-                        setState(() {
-                          futureMovies = repository.getMoviesList();
-                        });
-                      },
+                      onPressed: () => _controller.getMoviesList(),
                       icon: const Icon(
                         Icons.refresh,
                         size: 24.0,
@@ -57,40 +60,32 @@ class _HomeViewState extends State<HomeView> {
                     ),
                   ],
                 );
-              } else {
-                return RefreshIndicator(
-                  onRefresh: () {
-                    setState(() {
-                      futureMovies = repository.getMoviesList();
-                    });
-                    return futureMovies;
-                  },
-                  child: GridView.builder(
-                    shrinkWrap: true,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: tam < 1 ? 1 : tam,
-                      childAspectRatio: 0.75,
-                    ),
-                    padding: const EdgeInsets.all(14),
-                    itemCount: list.length,
-                    itemBuilder: (context, i) {
-                      return Container(
-                        margin: const EdgeInsets.all(7),
-                        child: MovieCard(
-                          id: list[i].id,
-                          posterUrl: list[i].posterUrl,
-                          title: list[i].title,
-                        ),
-                      );
-                    },
-                  ),
-                );
               }
-            } else if (snapshot.hasError) {
-              return Text('${snapshot.error}');
+            } else {
+              return RefreshIndicator(
+                onRefresh: () => _controller.getMoviesList(),
+                child: GridView.builder(
+                  shrinkWrap: true,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: tam < 1 ? 1 : tam,
+                    childAspectRatio: 0.75,
+                  ),
+                  padding: const EdgeInsets.all(14),
+                  itemCount: moviesList.length,
+                  itemBuilder: (context, i) {
+                    return Container(
+                      margin: const EdgeInsets.all(7),
+                      child: MovieCard(
+                        id: moviesList[i].id,
+                        posterUrl: moviesList[i].posterUrl,
+                        title: moviesList[i].title,
+                      ),
+                    );
+                  },
+                ),
+              );
             }
-            return const CircularProgressIndicator();
-          },
+          }),
         ),
       ),
     );

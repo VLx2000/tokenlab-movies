@@ -7,6 +7,7 @@ class MovieDetails {
   final String releaseDate;
   final String overview;
   final int runtime;
+  final String backdropUrl;
 
   MovieDetails({
     required this.id,
@@ -17,6 +18,7 @@ class MovieDetails {
     required this.releaseDate,
     required this.overview,
     required this.runtime,
+    required this.backdropUrl,
   });
 
   factory MovieDetails.fromJson(Map<String, dynamic> json) {
@@ -29,6 +31,7 @@ class MovieDetails {
       releaseDate: json['release_date'],
       overview: json['overview'],
       runtime: json['runtime'],
+      backdropUrl: json['backdrop_url'],
     );
   }
 }
