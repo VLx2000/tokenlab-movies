@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:tokenlab_movies/controllers/movies_controller.dart';
 import 'package:tokenlab_movies/models/movie_details_model.dart';
 import 'package:tokenlab_movies/views/MovieDetailsView/widgets/backdrop_widget.dart';
-import 'package:tokenlab_movies/views/MovieDetailsView/widgets/poster_widget.dart';
 import 'package:tokenlab_movies/views/MovieDetailsView/widgets/genre_column.dart';
 import 'package:tokenlab_movies/views/MovieDetailsView/widgets/overview_line.dart';
 import 'package:tokenlab_movies/views/MovieDetailsView/widgets/rating_column.dart';
@@ -28,70 +27,100 @@ class _MovieDetailsViewState extends State<MovieDetailsView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('filme nº${widget.id}'),
-      ),
-      body: FutureBuilder<MovieDetails>(
-        future: futureGame,
-        builder: ((context, snapshot) {
-          if (snapshot.hasError) {
-            return const Center(
+    return FutureBuilder<MovieDetails>(
+      future: futureGame,
+      builder: ((context, snapshot) {
+        if (snapshot.hasError) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('filme nº${widget.id}'),
+            ),
+            body: const Center(
               child: Text("Ocorreu um erro ao buscar o filme :("),
-            );
-          } else if (snapshot.hasData) {
-            return SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 36,
-                vertical: 12,
-              ),
-              child: Column(
-                children: [
-                  // Titulo do jogo e data de lançamento
-                  TitleReleaseWidget(
-                    title: snapshot.data!.title,
-                    releaseDate: snapshot.data!.releaseDate,
-                    distanceItens: distanceItens,
-                  ),
-                  // Cover do jogo
-                  PosterWidget(
-                    title: snapshot.data!.title,
-                    url: snapshot.data!.posterUrl,
-                  ),
-                  // Linha de generos e avaliação
-                  Padding(
-                    padding: EdgeInsets.only(
-                        bottom: distanceItens, top: distanceItens),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          GenreWidget(
-                            genres: snapshot.data?.genres,
+            ),
+          );
+        } else if (snapshot.hasData) {
+          return Scaffold(
+            body: NestedScrollView(
+              headerSliverBuilder:
+                  (BuildContext context, bool innerBoxIsScrolled) {
+                return [
+                  SliverAppBar(
+                    pinned: true,
+                    snap: false,
+                    floating: false,
+                    title: Text(
+                      snapshot.data!.title,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        shadows: <Shadow>[
+                          Shadow(
+                            offset: Offset(1.0, 1.0),
+                            blurRadius: 5.0,
+                            color: Colors.black,
                           ),
-                          RatingWidget(
-                            rating: snapshot.data?.voteAverage,
-                          ),
-                        ]),
+                        ],
+                      ),
+                    ),
+                    expandedHeight: 400.0,
+                    flexibleSpace: FlexibleSpaceBar(
+                      background: BackdropWidget(
+                        title: snapshot.data!.title,
+                        url: snapshot.data!.backdropUrl,
+                      ),
+                    ),
                   ),
-                  // Linha de descrição
-                  OverviewWidget(
-                    overview: snapshot.data?.overview,
-                    distanceItens: distanceItens,
-                  ),
-                  BackdropWidget(
-                    title: snapshot.data!.title,
-                    url: snapshot.data!.backdropUrl,
-                  ),
-                ],
+                ];
+              },
+              body: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 36,
+                  vertical: 42,
+                ),
+                child: Column(
+                  children: [
+                    // Titulo e data de lançamento
+                    TitleReleaseWidget(
+                      title: snapshot.data!.title,
+                      releaseDate: snapshot.data!.releaseDate,
+                      distanceItens: distanceItens,
+                    ),
+                    // Linha de generos e avaliação
+                    Padding(
+                      padding: EdgeInsets.only(
+                          bottom: distanceItens, top: distanceItens),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            GenreWidget(
+                              genres: snapshot.data?.genres,
+                            ),
+                            RatingWidget(
+                              rating: snapshot.data?.voteAverage,
+                            ),
+                          ]),
+                    ),
+                    // Linha de descrição
+                    OverviewWidget(
+                      overview: snapshot.data?.overview,
+                      distanceItens: distanceItens,
+                    ),
+                  ],
+                ),
               ),
-            );
-          } else {
-            return const Center(
+            ),
+          );
+        } else {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('filme nº${widget.id}'),
+            ),
+            body: const Center(
               child: CircularProgressIndicator(),
-            );
-          }
-        }),
-      ),
+            ),
+          );
+        }
+      }),
     );
   }
 }
