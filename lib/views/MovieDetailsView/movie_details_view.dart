@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:tokenlab_movies/controllers/movies_controller.dart';
 import 'package:tokenlab_movies/models/movie_details_model.dart';
 import 'package:tokenlab_movies/views/MovieDetailsView/widgets/backdrop_widget.dart';
-import 'package:tokenlab_movies/views/MovieDetailsView/widgets/genre_column.dart';
-import 'package:tokenlab_movies/views/MovieDetailsView/widgets/overview_line.dart';
-import 'package:tokenlab_movies/views/MovieDetailsView/widgets/rating_column.dart';
-import 'package:tokenlab_movies/views/MovieDetailsView/widgets/title_and_release_widget.dart';
+import 'package:tokenlab_movies/views/MovieDetailsView/widgets/genre_widget.dart';
+import 'package:tokenlab_movies/views/MovieDetailsView/widgets/overview_widget.dart';
+import 'package:tokenlab_movies/views/MovieDetailsView/widgets/rating_widget.dart';
+import 'package:tokenlab_movies/views/MovieDetailsView/widgets/top_info_widget.dart';
 
 class MovieDetailsView extends StatefulWidget {
   const MovieDetailsView({super.key, required this.id});
@@ -28,13 +28,11 @@ class _MovieDetailsViewState extends State<MovieDetailsView> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<MovieDetails>(
-      future: futureGame,
+      future: _controller.getMovieDetails(widget.id),
       builder: ((context, snapshot) {
         if (snapshot.hasError) {
           return Scaffold(
-            appBar: AppBar(
-              title: Text('filme nº${widget.id}'),
-            ),
+            appBar: AppBar(),
             body: const Center(
               child: Text("Ocorreu um erro ao buscar o filme :("),
             ),
@@ -49,20 +47,7 @@ class _MovieDetailsViewState extends State<MovieDetailsView> {
                     pinned: true,
                     snap: false,
                     floating: false,
-                    title: Text(
-                      snapshot.data!.title,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        shadows: <Shadow>[
-                          Shadow(
-                            offset: Offset(1.0, 1.0),
-                            blurRadius: 5.0,
-                            color: Colors.black,
-                          ),
-                        ],
-                      ),
-                    ),
-                    expandedHeight: 400.0,
+                    expandedHeight: 200.0,
                     flexibleSpace: FlexibleSpaceBar(
                       background: BackdropWidget(
                         title: snapshot.data!.title,
@@ -79,10 +64,12 @@ class _MovieDetailsViewState extends State<MovieDetailsView> {
                 ),
                 child: Column(
                   children: [
-                    // Titulo e data de lançamento
-                    TitleReleaseWidget(
+                    // Titulo, duração e data de lançamento
+                    TopInfoWidget(
                       title: snapshot.data!.title,
                       releaseDate: snapshot.data!.releaseDate,
+                      runtime: snapshot.data!.runtime,
+                      posterUrl: snapshot.data!.posterUrl,
                       distanceItens: distanceItens,
                     ),
                     // Linha de generos e avaliação
@@ -112,9 +99,7 @@ class _MovieDetailsViewState extends State<MovieDetailsView> {
           );
         } else {
           return Scaffold(
-            appBar: AppBar(
-              title: Text('filme nº${widget.id}'),
-            ),
+            appBar: AppBar(),
             body: const Center(
               child: CircularProgressIndicator(),
             ),

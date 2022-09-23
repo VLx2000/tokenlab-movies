@@ -2,32 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:tokenlab_movies/controllers/movies_controller.dart';
 import 'package:tokenlab_movies/views/HomeView/widgets/movie_card.dart';
 
-class HomeView extends StatefulWidget {
-  const HomeView({super.key});
+class HomeView extends StatelessWidget {
+  HomeView({super.key});
 
-  @override
-  State<HomeView> createState() => _HomeViewState();
-}
-
-Widget loading() {
-  return const Center(
-    child: CircularProgressIndicator(),
-  );
-}
-
-class _HomeViewState extends State<HomeView> {
   final MoviesController _controller = MoviesController();
-
-  @override
-  void initState() {
-    super.initState();
-    _controller.getMoviesList();
-  }
 
   @override
   Widget build(BuildContext context) {
     final int tam = MediaQuery.of(context).size.width ~/ 150;
-
+    _controller.getMoviesList();
     return Scaffold(
       appBar: AppBar(title: const Text('Tokenlab Movies')),
       body: Center(

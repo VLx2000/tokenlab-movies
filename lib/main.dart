@@ -24,7 +24,7 @@ class MovieApp extends StatelessWidget {
       initialRoute: '/',
       onGenerateRoute: (settings) {
         if (settings.name == '/') {
-          return MaterialPageRoute(builder: (context) => const HomeView());
+          return MaterialPageRoute(builder: (context) => HomeView());
         }
         if (settings.name == '/movie') {
           var args = settings.arguments;

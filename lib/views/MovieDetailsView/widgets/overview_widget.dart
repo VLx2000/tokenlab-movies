@@ -13,16 +13,13 @@ class OverviewWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Title(
-              color: Colors.black,
-              child: const Text(
-                "Descrição",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
+          const Padding(
+            padding: EdgeInsets.only(bottom: 8),
+            child: Text(
+              "Descrição",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
               ),
             ),
           ),
