@@ -27,8 +27,10 @@ class _MovieDetailsViewState extends State<MovieDetailsView> {
 
   @override
   Widget build(BuildContext context) {
+    // utilizando future builder, pois
+    // so será carregada uma vez
     return FutureBuilder<MovieDetails>(
-      future: _controller.getMovieDetails(widget.id),
+      future: futureGame,
       builder: ((context, snapshot) {
         if (snapshot.hasError) {
           return Scaffold(
@@ -44,13 +46,9 @@ class _MovieDetailsViewState extends State<MovieDetailsView> {
                   (BuildContext context, bool innerBoxIsScrolled) {
                 return [
                   SliverAppBar(
-                    pinned: true,
-                    snap: false,
-                    floating: false,
                     expandedHeight: 200.0,
                     flexibleSpace: FlexibleSpaceBar(
                       background: BackdropWidget(
-                        title: snapshot.data!.title,
                         url: snapshot.data!.backdropUrl,
                       ),
                     ),
@@ -98,6 +96,7 @@ class _MovieDetailsViewState extends State<MovieDetailsView> {
             ),
           );
         } else {
+          // por padrao exibe loading
           return Scaffold(
             appBar: AppBar(),
             body: const Center(

@@ -24,7 +24,7 @@ class MovieApp extends StatelessWidget {
       initialRoute: '/',
       onGenerateRoute: (settings) {
         if (settings.name == '/') {
-          return MaterialPageRoute(builder: (context) => HomeView());
+          return MaterialPageRoute(builder: (context) => const HomeView());
         }
         if (settings.name == '/movie') {
           var args = settings.arguments;
@@ -48,7 +48,7 @@ class UnknownScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(),
       body: const Center(
-        child: Text('404!'),
+        child: Text('Ops!'),
       ),
     );
   }

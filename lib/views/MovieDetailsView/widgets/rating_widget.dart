@@ -20,6 +20,7 @@ class RatingWidget extends StatelessWidget {
       fills[integerPart] = 0.5;
     }
 
+    // logica para preencher estrelas de avaliação
     List<Widget> fillStars() {
       List<Widget> childs = [];
       for (double fill in fills) {

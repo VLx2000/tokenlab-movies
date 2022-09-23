@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 
 class BackdropWidget extends StatelessWidget {
   final String url;
-  final String title;
   const BackdropWidget({
     super.key,
-    required this.title,
     required this.url,
   });
 

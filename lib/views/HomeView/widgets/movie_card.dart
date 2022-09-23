@@ -24,6 +24,7 @@ class MovieCard extends StatelessWidget {
           placeholderFit: BoxFit.fill,
           image: posterUrl,
           fit: BoxFit.fill,
+          // tratando possivel erro 404
           imageErrorBuilder: (context, error, stackTrace) => Container(
             decoration: const BoxDecoration(
               borderRadius: BorderRadius.all(
