@@ -15,14 +15,14 @@ class MovieDetailsView extends StatefulWidget {
 }
 
 class _MovieDetailsViewState extends State<MovieDetailsView> {
-  late Future<MovieDetails> futureGame;
+  late Future<MovieDetails> futureMovie;
   final MoviesController _controller = MoviesController();
   double distanceItens = 18;
 
   @override
   void initState() {
     super.initState();
-    futureGame = _controller.getMovieDetails(widget.id);
+    futureMovie = _controller.getMovieDetails(widget.id);
   }
 
   @override
@@ -30,13 +30,34 @@ class _MovieDetailsViewState extends State<MovieDetailsView> {
     // utilizando future builder, pois
     // so será carregada uma vez
     return FutureBuilder<MovieDetails>(
-      future: futureGame,
+      future: futureMovie,
       builder: ((context, snapshot) {
         if (snapshot.hasError) {
           return Scaffold(
             appBar: AppBar(),
-            body: const Center(
-              child: Text("Ocorreu um erro ao buscar o filme :("),
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "Ocorreu um erro ao buscar o filme :(",
+                    style: TextStyle(
+                      color: Colors.white,
+                      decorationColor: Colors.white,
+                    ),
+                  ),
+                  ElevatedButton.icon(
+                    onPressed: () => setState(() {
+                      futureMovie = _controller.getMovieDetails(widget.id);
+                    }),
+                    icon: const Icon(
+                      Icons.refresh,
+                      size: 24.0,
+                    ),
+                    label: const Text('Tentar novamente'),
+                  ),
+                ],
+              ),
             ),
           );
         } else if (snapshot.hasData) {
