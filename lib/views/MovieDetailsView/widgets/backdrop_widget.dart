@@ -10,7 +10,6 @@ class BackdropWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      //borderRadius: BorderRadius.circular(14),
       child: FadeInImage.assetNetwork(
         placeholder: 'assets/backdrop.png',
         placeholderFit: BoxFit.cover,
