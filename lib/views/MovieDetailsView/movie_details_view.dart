@@ -15,38 +15,73 @@ class MovieDetailsView extends StatefulWidget {
 }
 
 class _MovieDetailsViewState extends State<MovieDetailsView> {
-  late Future<MovieDetails> futureGame;
+  late Future<MovieDetails> futureMovie;
   final MoviesController _controller = MoviesController();
   double distanceItens = 18;
+  bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    futureGame = _controller.getMovieDetails(widget.id);
+    futureMovie = _controller.getMovieDetails(widget.id);
   }
 
   @override
   Widget build(BuildContext context) {
     // utilizando future builder, pois
     // so será carregada uma vez
-    return FutureBuilder<MovieDetails>(
-      future: futureGame,
-      builder: ((context, snapshot) {
-        if (snapshot.hasError) {
-          return Scaffold(
-            appBar: AppBar(),
-            body: const Center(
-              child: Text("Ocorreu um erro ao buscar o filme :("),
-            ),
-          );
-        } else if (snapshot.hasData) {
-          return Scaffold(
-            body: NestedScrollView(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Tokenlab Movies'),
+        centerTitle: true,
+      ),
+      body: FutureBuilder<MovieDetails>(
+        future: futureMovie,
+        builder: ((context, snapshot) {
+          if (snapshot.hasError) {
+            return isLoading
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          "Ocorreu um erro ao buscar o filme :(",
+                          style: TextStyle(
+                            color: Colors.white,
+                            decorationColor: Colors.white,
+                          ),
+                        ),
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            setState(() {
+                              futureMovie =
+                                  _controller.getMovieDetails(widget.id);
+                              isLoading = true;
+                            });
+                            Future.delayed(const Duration(seconds: 2),
+                                () => setState(() => isLoading = false));
+                          },
+                          icon: const Icon(
+                            Icons.refresh,
+                            size: 24.0,
+                          ),
+                          label: const Text('Tentar novamente'),
+                        ),
+                      ],
+                    ),
+                  );
+          } else if (snapshot.hasData) {
+            return NestedScrollView(
               headerSliverBuilder:
                   (BuildContext context, bool innerBoxIsScrolled) {
                 return [
                   SliverAppBar(
-                    expandedHeight: 200.0,
+                    backgroundColor: Colors.transparent,
+                    automaticallyImplyLeading: false,
+                    expandedHeight: 250.0,
                     flexibleSpace: FlexibleSpaceBar(
                       background: BackdropWidget(
                         url: snapshot.data!.backdropUrl,
@@ -93,18 +128,15 @@ class _MovieDetailsViewState extends State<MovieDetailsView> {
                   ],
                 ),
               ),
-            ),
-          );
-        } else {
-          // por padrao exibe loading
-          return Scaffold(
-            appBar: AppBar(),
-            body: const Center(
+            );
+          } else {
+            // por padrao exibe loading
+            return const Center(
               child: CircularProgressIndicator(),
-            ),
-          );
-        }
-      }),
+            );
+          }
+        }),
+      ),
     );
   }
 }

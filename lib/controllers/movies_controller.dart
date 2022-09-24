@@ -21,16 +21,19 @@ class MoviesController {
         Uri.parse(Consts().API_URL),
       );
       loadingMoviesList.value = false;
-      moviesList.value = (jsonDecode(response.body) as List)
-          .map((movie) => Movie.fromJson(movie))
-          .toList();
+      if (response.statusCode != 200) {
+        throw Exception('Problema na resposta do servidor');
+      } else {
+        moviesList.value = (jsonDecode(response.body) as List)
+            .map((movie) => Movie.fromJson(movie))
+            .toList();
+      }
     } catch (e) {
       debugPrint(e.toString());
       loadingMoviesList.value = false;
       errorMoviesList.value = true;
       moviesList.value = temp;
     }
-    return;
   }
 
   Future<MovieDetails> getMovieDetails(int id) async {
@@ -38,11 +41,15 @@ class MoviesController {
       final response = await http.get(
         Uri.parse('${Consts().API_URL}/$id'),
       );
-      MovieDetails movie = MovieDetails.fromJson(jsonDecode(response.body));
-      return movie;
+      if (response.statusCode != 200) {
+        throw Exception('Problema na resposta do servidor');
+      } else {
+        MovieDetails movie = MovieDetails.fromJson(jsonDecode(response.body));
+        return movie;
+      }
     } catch (e) {
       debugPrint(e.toString());
-      throw Exception('erro');
+      throw Exception('Ocorreu um erro');
     }
   }
 }

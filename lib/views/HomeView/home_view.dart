@@ -24,7 +24,10 @@ class _HomeViewState extends State<HomeView> {
     final int tam = MediaQuery.of(context).size.width ~/ 150;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Tokenlab Movies')),
+      appBar: AppBar(
+        title: const Text('Tokenlab Movies'),
+        centerTitle: true,
+      ),
       body: Center(
         child: ValueListenableBuilder(
           valueListenable: _controller.moviesList,
